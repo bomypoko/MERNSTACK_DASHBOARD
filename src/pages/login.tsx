@@ -1,42 +1,44 @@
-import { useEffect, useRef } from "react";
-import { useLogin } from "@pankod/refine-core";
-import { Container, Box } from "@pankod/refine-mui";
+import { useEffect, useRef } from "react"
+import { useLogin } from "@pankod/refine-core"
+import { Container, Box } from "@pankod/refine-mui"
 
-import { CredentialResponse } from "../interfaces/google";
+import { yariga } from "../assets"
+
+import { CredentialResponse } from "../interfaces/google"
 
 export const Login: React.FC = () => {
-  const { mutate: login } = useLogin<CredentialResponse>();
+  const { mutate: login } = useLogin<CredentialResponse>()
 
   const GoogleButton = (): JSX.Element => {
-    const divRef = useRef<HTMLDivElement>(null);
+    const divRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
       if (typeof window === "undefined" || !window.google || !divRef.current) {
-        return;
+        return
       }
 
       try {
         window.google.accounts.id.initialize({
           ux_mode: "popup",
-          client_id: "your-client-id",
+          client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
           callback: async (res: CredentialResponse) => {
             if (res.credential) {
-              login(res);
+              login(res)
             }
           },
-        });
+        })
         window.google.accounts.id.renderButton(divRef.current, {
           theme: "filled_blue",
           size: "medium",
           type: "standard",
-        });
+        })
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    }, []); // you can also add your client id as dependency here
+    }, []) // you can also add your client id as dependency here
 
-    return <div ref={divRef} />;
-  };
+    return <div ref={divRef} />
+  }
 
   return (
     <Box
@@ -73,5 +75,5 @@ export const Login: React.FC = () => {
         </Box>
       </Container>
     </Box>
-  );
-};
+  )
+}
