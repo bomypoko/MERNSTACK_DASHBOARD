@@ -22,7 +22,7 @@ import { Title, Sider, Layout, Header } from "components/layout";
 import { CredentialResponse } from "interfaces/google";
 import { parseJwt } from "utils/parse-jwt";
 
-import { Login } from "pages/login";
+import { Login , Home } from "pages";
 
 
 const axiosInstance = axios.create();
@@ -146,6 +146,7 @@ function App() {
           LoginPage={Login}
           i18nProvider={i18nProvider}
           DashboardPage={Home}
+         
          
         />
       </RefineSnackbarProvider>
