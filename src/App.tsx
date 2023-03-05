@@ -1,6 +1,6 @@
-import React from "react";
+import React from "react"
 
-import { Refine, AuthProvider } from "@pankod/refine-core";
+import { Refine, AuthProvider } from "@pankod/refine-core"
 import {
   notificationProvider,
   RefineSnackbarProvider,
@@ -8,43 +8,50 @@ import {
   GlobalStyles,
   ReadyPage,
   ErrorComponent,
-} from "@pankod/refine-mui";
+} from "@pankod/refine-mui"
 
-import { AccountCircleOutlined , VillaOutlined , ChatBubbleOutline , PeopleAltOutlined, StarOutlineRounded  } from "@mui/icons-material";
-
-import dataProvider from "@pankod/refine-simple-rest";
-import { MuiInferencer } from "@pankod/refine-inferencer/mui";
-import routerProvider from "@pankod/refine-react-router-v6";
-import axios, { AxiosRequestConfig } from "axios";
-import { useTranslation } from "react-i18next";
-import { ColorModeContextProvider } from "contexts";
-import { Title, Sider, Layout, Header } from "components/layout";
-import { CredentialResponse } from "interfaces/google";
-import { parseJwt } from "utils/parse-jwt";
-
-import { Login , Home } from "pages";
+import {
+  AccountCircleOutlined,
+  VillaOutlined,
+  ChatBubbleOutline,
+  PeopleAltOutlined,
+  StarOutlineRounded,
+} from "@mui/icons-material"
 
 
-const axiosInstance = axios.create();
+
+import dataProvider from "@pankod/refine-simple-rest"
+import { MuiInferencer } from "@pankod/refine-inferencer/mui"
+import routerProvider from "@pankod/refine-react-router-v6"
+import axios, { AxiosRequestConfig } from "axios"
+import { useTranslation } from "react-i18next"
+import { ColorModeContextProvider } from "contexts"
+import { Title, Sider, Layout, Header } from "components/layout"
+import { CredentialResponse } from "interfaces/google"
+import { parseJwt } from "utils/parse-jwt"
+
+import { Login, Home , Agents, MyProfile, PropertyDetails, AllProperties, CreateProperty, AgentProfile, EditProperty } from "pages"
+
+const axiosInstance = axios.create()
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token")
   if (request.headers) {
-    request.headers["Authorization"] = `Bearer ${token}`;
+    request.headers["Authorization"] = `Bearer ${token}`
   } else {
     request.headers = {
       Authorization: `Bearer ${token}`,
-    };
+    }
   }
 
-  return request;
-});
+  return request
+})
 
 function App() {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation()
 
   const authProvider: AuthProvider = {
     login: ({ credential }: CredentialResponse) => {
-      const profileObj = credential ? parseJwt(credential) : null;
+      const profileObj = credential ? parseJwt(credential) : null
 
       if (profileObj) {
         localStorage.setItem(
@@ -53,51 +60,51 @@ function App() {
             ...profileObj,
             avatar: profileObj.picture,
           })
-        );
+        )
       }
 
-      localStorage.setItem("token", `${credential}`);
+      localStorage.setItem("token", `${credential}`)
 
-      return Promise.resolve();
+      return Promise.resolve()
     },
     logout: () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token")
 
       if (token && typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        axios.defaults.headers.common = {};
+        localStorage.removeItem("token")
+        localStorage.removeItem("user")
+        axios.defaults.headers.common = {}
         window.google?.accounts.id.revoke(token, () => {
-          return Promise.resolve();
-        });
+          return Promise.resolve()
+        })
       }
 
-      return Promise.resolve();
+      return Promise.resolve()
     },
     checkError: () => Promise.resolve(),
     checkAuth: async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token")
 
       if (token) {
-        return Promise.resolve();
+        return Promise.resolve()
       }
-      return Promise.reject();
+      return Promise.reject()
     },
 
     getPermissions: () => Promise.resolve(),
     getUserIdentity: async () => {
-      const user = localStorage.getItem("user");
+      const user = localStorage.getItem("user")
       if (user) {
-        return Promise.resolve(JSON.parse(user));
+        return Promise.resolve(JSON.parse(user))
       }
     },
-  };
+  }
 
   const i18nProvider = {
     translate: (key: string, params: object) => t(key, params),
     changeLocale: (lang: string) => i18n.changeLanguage(lang),
     getLocale: () => i18n.language,
-  };
+  }
 
   return (
     <ColorModeContextProvider>
@@ -113,28 +120,28 @@ function App() {
             {
               name: "property",
               list: MuiInferencer,
-              icon: <VillaOutlined/>
+              icon: <VillaOutlined />,
             },
             {
               name: "agent",
               list: MuiInferencer,
-              icon: <PeopleAltOutlined/>
+              icon: <PeopleAltOutlined />,
             },
             {
               name: "review",
               list: MuiInferencer,
-              icon: <StarOutlineRounded/>
+              icon: <StarOutlineRounded />,
             },
             {
               name: "message",
               list: MuiInferencer,
-              icon: <ChatBubbleOutline/>
+              icon: <ChatBubbleOutline />,
             },
             {
               name: "my-profile",
-              options: { lable : 'My-Profile'},
+              options: { lable: "My-Profile" },
               list: MuiInferencer,
-              icon: <AccountCircleOutlined/>
+              icon: <AccountCircleOutlined />,
             },
           ]}
           Title={Title}
@@ -146,12 +153,10 @@ function App() {
           LoginPage={Login}
           i18nProvider={i18nProvider}
           DashboardPage={Home}
-         
-         
         />
       </RefineSnackbarProvider>
     </ColorModeContextProvider>
-  );
+  )
 }
 
-export default App;
+export default App
